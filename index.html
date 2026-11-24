@@ -1,0 +1,74 @@
+ 
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>陸拾60 LIFF 測試</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      background: #111;
+      color: #d4af37;
+      font-family: sans-serif;
+      padding: 24px;
+    }
+    #status {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>陸拾60 AQUARIUM</h1>
+  <h2>LINE LIFF 身分驗證測試</h2>
+  <div id="status">正在初始化...</div>
+
+  <script>
+    const status = document.getElementById('status');
+
+    async function main() {
+      try {
+        status.textContent = '正在初始化 LIFF...';
+
+        await Promise.race([
+          liff.init({
+            liffId: '2012778601-dKMBjFNj'
+          }),
+          new Promise((_, reject) => {
+            setTimeout(() => {
+              reject(new Error('初始化超過15秒'));
+            }, 15000);
+          })
+        ]);
+
+        status.textContent = 'LIFF 初始化成功';
+
+        if (!liff.isLoggedIn()) {
+          status.textContent += '\n尚未登入 LINE';
+          return;
+        }
+
+        status.textContent += '\nLINE 登入成功';
+
+        const token = liff.getIDToken();
+
+        status.textContent += token
+          ? '\n身分憑證取得成功'
+          : '\n未取得身分憑證';
+
+      } catch (error) {
+        status.textContent =
+          '測試失敗：' + error.message;
+      }
+    }
+
+    main();
+  </script>
+
+</body>
+</html>
